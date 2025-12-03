@@ -2,70 +2,92 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>CRM Data Filler — Demo (Polished)</title>
+  <title>CRM Data Filler — Polished Demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- SheetJS for client-side Excel creation -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.19.2/dist/xlsx.full.min.js"></script>
+
   <style>
     :root{
-      --bg:#0f172a; --card:#0b1220; --muted:#94a3b8; --accent:#2563eb; --success:#10b981; --warn:#f59e0b;
+      --bg:#0f172a; --card:#0b1220; --muted:#94a3b8; 
+      --accent:#2563eb; --success:#10b981; --warn:#f59e0b;
       --glass: rgba(255,255,255,0.03);
     }
     body{
       background: linear-gradient(180deg,#071033 0%, #031025 100%);
-      color:#e6eef8; font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif; margin:0; padding:28px;
-      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      color:#e6eef8; font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif; 
+      margin:0; padding:28px;
     }
     .container{max-width:1100px;margin:0 auto;}
     header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
-    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,#2dd4bf,#3b82f6);display:flex;align-items:center;justify-content:center;font-weight:700}
+    .logo{width:56px;height:56px;border-radius:10px;
+      background:linear-gradient(135deg,#2dd4bf,#3b82f6);
+      display:flex;align-items:center;justify-content:center;font-weight:700}
     h1{margin:0;font-size:20px}
     p.lead{color:var(--muted);margin:4px 0 0;font-size:13px}
 
     .grid{display:grid;grid-template-columns:1fr 420px;gap:18px;margin-top:18px}
-    .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 6px 20px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
-    textarea{width:100%;height:180px;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:var(--glass);color:inherit;resize:vertical}
+    .card{background:var(--card);border-radius:12px;padding:16px;
+      box-shadow:0 6px 20px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+    textarea{
+      width:100%;height:180px;padding:12px;border-radius:8px;
+      border:1px solid rgba(255,255,255,0.04);
+      background:var(--glass);color:inherit;resize:vertical
+    }
     .controls{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
-    button.primary{background:var(--accent);color:white;border:0;padding:10px 14px;border-radius:8px;cursor:pointer}
-    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 12px;border-radius:8px;cursor:pointer}
-    button.success{background:var(--success);color:#062018;border:0;padding:10px 12px;border-radius:8px;cursor:pointer}
-    button.warn{background:var(--warn);color:#572c00;border:0;padding:10px 12px;border-radius:8px;cursor:pointer}
+    button.primary{
+      background:var(--accent);color:white;border:0;padding:10px 14px;
+      border-radius:8px;cursor:pointer
+    }
+    button.ghost{
+      background:transparent;border:1px solid rgba(255,255,255,0.06);
+      color:var(--muted);padding:8px 12px;border-radius:8px;cursor:pointer
+    }
+    button.success{
+      background:var(--success);color:#062018;border:0;
+      padding:10px 12px;border-radius:8px;cursor:pointer
+    }
 
-    .agent{margin-top:12px;padding:12px;border-radius:8px;background:linear-gradient(90deg, rgba(37,99,235,0.08), rgba(16,185,129,0.03));color: #eaf5ff;border:1px solid rgba(37,99,235,0.12)}
-    .agent strong{display:block;color:#e6f0ff}
+    .agent{margin-top:12px;padding:12px;border-radius:8px;
+      background:linear-gradient(90deg, rgba(37,99,235,0.08), rgba(16,185,129,0.03));
+      color:#eaf5ff;border:1px solid rgba(37,99,235,0.12)}
+    .agent strong{display:block}
+
     .meta{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
-    .badge{padding:6px 8px;border-radius:999px;font-size:12px;background:rgba(255,255,255,0.03);color:var(--muted);border:1px solid rgba(255,255,255,0.02)}
-    .badge.green{background:rgba(16,185,129,0.12);color:#a7f3d0;border:1px solid rgba(16,185,129,0.14)}
-    .badge.yellow{background:rgba(245,158,11,0.08);color:#ffd9a8;border:1px solid rgba(245,158,11,0.12)}
-    .out-pre{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:10px;margin-top:12px;color:#dbeafe;max-height:420px;overflow:auto;border:1px solid rgba(255,255,255,0.03)}
+    .badge{padding:6px 8px;border-radius:999px;font-size:12px;
+      background:rgba(255,255,255,0.03);color:var(--muted);
+      border:1px solid rgba(255,255,255,0.02)}
+    .badge.green{background:rgba(16,185,129,0.12);color:#a7f3d0}
+    .badge.yellow{background:rgba(245,158,11,0.08);color:#ffd9a8}
+
+    .out-pre{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding:14px;border-radius:10px;margin-top:12px;color:#dbeafe;
+      max-height:420px;overflow:auto;border:1px solid rgba(255,255,255,0.03)}
     table{width:100%;border-collapse:collapse;color:#e6eef8}
     th,td{padding:8px 10px;text-align:left;border-bottom:1px dashed rgba(255,255,255,0.03);font-size:13px}
     th{color:var(--muted);font-weight:600}
-    .small{font-size:12px;color:var(--muted)}
 
-    .right-panel{position:relative}
+    .right-panel{}
     .result-card{display:flex;flex-direction:column;gap:10px}
-    .row{display:flex;gap:10px;align-items:center}
-    .muted{color:var(--muted);font-size:13px}
-    .footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
-    @media(max-width:980px){.grid{grid-template-columns:1fr;}.right-panel{order:2}}
+    .small{font-size:12px;color:var(--muted)}
   </style>
 </head>
+
 <body>
   <div class="container">
     <header>
       <div class="logo">AI</div>
       <div>
         <h1>CRM Data Filler — Polished Demo</h1>
-        <p class="lead">Paste a meeting note below. Agent will extract structured CRM data — download as JSON or Excel.</p>
+        <p class="lead">Paste a meeting note below. Agent will extract structured CRM data — download as JSON.</p>
       </div>
     </header>
 
     <div class="grid">
-      <!-- LEFT: Input & output -->
+      <!-- LEFT -->
       <div class="card">
         <label class="small">Meeting summary</label>
-        <textarea id="txt" placeholder="Paste meeting summary here...">Had call with Sarah Johnson, Marketing Director at GrowthTech. They need marketing automation for a 50-person team. Budget: $30K annually. Evaluating HubSpot vs our solution. Next: Demo scheduled for Friday 10th June. Contact email: sarah.j@growthtech.com, phone +1-555-123-4567.</textarea>
+        <textarea id="txt">
+Had call with Sarah Johnson, Marketing Director at GrowthTech. They need marketing automation for a 50-person team. Budget: $30K annually. Evaluating HubSpot vs our solution. Next: Demo scheduled for Friday 10th June. Contact email: sarah.j@growthtech.com, phone +1-555-123-4567.
+        </textarea>
 
         <div class="controls">
           <button class="primary" id="btnExtract" onclick="callExtract()">Extract</button>
@@ -73,15 +95,12 @@
           <button class="ghost" onclick="useSample(3)">Sample 3</button>
           <button class="success" onclick="copyJSON()">Copy JSON</button>
           <button class="ghost" onclick="downloadJSON()">Download JSON</button>
-          <button class="warn" onclick="downloadExcel()">Download Excel (.xlsx)</button>
         </div>
 
         <div id="agent" class="agent" style="display:none">
           <strong id="agent_msg"></strong>
-          <div class="meta">
-            <div id="badges"></div>
-            <div id="summary" class="muted"></div>
-          </div>
+          <div class="meta" id="badges"></div>
+          <div class="small" id="summary"></div>
         </div>
 
         <div id="output_raw" class="out-pre" style="display:none">
@@ -89,221 +108,152 @@
         </div>
 
         <div id="table_view" class="out-pre" style="display:none">
-          <table id="result_table">
+          <table>
             <thead><tr><th>Field</th><th>Value</th></tr></thead>
             <tbody id="result_body"></tbody>
           </table>
         </div>
-
       </div>
 
-      <!-- RIGHT: Quick fields & preview -->
+      <!-- RIGHT -->
       <div class="card right-panel">
         <div class="result-card">
-          <div>
-            <h3 style="margin:0">Quick Extract Preview</h3>
-            <p class="small muted">Important fields shown for quick copy/paste into CRM</p>
-          </div>
+          <h3 style="margin:0">Quick Extract Preview</h3>
+          <p class="small">Important fields shown for quick copy/paste into CRM</p>
+          <div id="quick_fields" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
 
-          <div id="quick_fields" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <!-- dynamic -->
-          </div>
-
-          <div style="margin-top:12px">
-            <h4 style="margin:0">CRM Payload (Preview)</h4>
-            <p class="small muted">HubSpot-style contact + deal payload (preview only)</p>
-            <pre id="payload_pre" class="small out-pre" style="max-height:240px;overflow:auto">No payload yet</pre>
-          </div>
+          <h4 style="margin-top:16px">CRM Payload (Preview)</h4>
+          <pre id="payload_pre" class="out-pre">No payload yet</pre>
         </div>
       </div>
     </div>
-
-    <div class="footer">Tip: Use the Excel download to drop rows into your CRM import template.</div>
   </div>
 
 <script>
-  // helper: prettify numbers (e.g., 30000 -> 30,000)
-  function fmtNumber(n){ if(n==null) return ''; return n.toLocaleString(); }
-
   function useSample(n){
-    const samples = {
-      2: "Met John Doe, CTO of FinSolve. Problem: onboarding churn, wants analytics PoC. Budget: INR 12,00,000. Interested in PoC. Contact: john@finsolve.in",
-      3: "Call with Ritu Singh (Head of Ops) at FarmFresh — looking for inventory optimization and delivery routing. Will decide Q3. Follow up next week to set PoC."
+    const samples={
+      2:"Met John Doe, CTO of FinSolve. Problem: onboarding churn, wants analytics PoC. Budget INR 12,00,000. Contact: john@finsolve.in",
+      3:"Call with Ritu Singh at FarmFresh — planning inventory optimization PoC. Follow up next week."
     };
-    document.getElementById('txt').value = samples[n] || "";
+    document.getElementById('txt').value=samples[n]||"";
   }
 
   async function callExtract(){
-    const text = document.getElementById('txt').value.trim();
-    if(!text){ alert('Paste a meeting summary first'); return; }
-    document.getElementById('btnExtract').disabled = true;
-    document.getElementById('btnExtract').textContent = 'Working...';
+    const text=document.getElementById('txt').value.trim();
+    if(!text){alert("Paste meeting notes first.");return;}
 
-    try {
-      const res = await fetch('/extract', {
+    const btn=document.getElementById('btnExtract');
+    btn.disabled=true; btn.textContent="Working...";
+
+    try{
+      const res=await fetch('/extract',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({meeting_text:text})
+        body:JSON.stringify({meeting_text:text})
       });
-      if(!res.ok){ const t = await res.text(); throw new Error(t || 'API error'); }
-      const j = await res.json();
+      const j=await res.json();
       renderResult(j);
-    } catch(e){
-      alert('Error: ' + (e.message || e));
-      console.error(e);
-    } finally {
-      document.getElementById('btnExtract').disabled = false;
-      document.getElementById('btnExtract').textContent = 'Extract';
+    }catch(err){
+      alert("Error: "+err);
+    }finally{
+      btn.disabled=false; btn.textContent="Extract";
     }
   }
 
   function renderResult(data){
-    // show agent message
-    const agentBox = document.getElementById('agent');
-    const agentMsg = document.getElementById('agent_msg');
-    if(data.agent_message){
-      agentBox.style.display = 'block';
-      agentMsg.textContent = data.agent_message;
-    } else {
-      agentBox.style.display = 'none';
-    }
+    const ex=data.extracted||data;
+    window.__LAST_EXTRACT=data;
 
-    const ex = data.extracted || data;
+    // Agent message
+    document.getElementById('agent').style.display='block';
+    document.getElementById('agent_msg').textContent=data.agent_message||"";
+
     // badges
-    const badges = document.getElementById('badges');
-    badges.innerHTML = '';
-    const conf = ex.confidence ?? 0.0;
-    const confBadge = document.createElement('span');
-    confBadge.className = 'badge ' + (conf>=0.8 ? 'green' : (conf>=0.6?'yellow':'')); 
-    confBadge.textContent = 'Confidence: ' + (conf ? Math.round(conf*100) + '%' : '—');
+    const badges=document.getElementById('badges');
+    badges.innerHTML="";
+    const confBadge=document.createElement('span');
+    confBadge.className="badge green";
+    confBadge.textContent="Confidence: "+Math.round((ex.confidence||0)*100)+"%";
     badges.appendChild(confBadge);
 
-    if(ex.deal && ex.deal.stage){
-      const sBadge = document.createElement('span');
-      sBadge.className = 'badge';
-      sBadge.textContent = ex.deal.stage;
-      badges.appendChild(sBadge);
-    }
-    if(ex.duplicate_checks && ex.duplicate_checks.contact_exists){
-      const d = document.createElement('span'); d.className='badge'; d.textContent='Duplicate contact';
-      badges.appendChild(d);
+    if(ex.deal?.stage){
+      const s=document.createElement('span');
+      s.className="badge";
+      s.textContent=ex.deal.stage;
+      badges.appendChild(s);
     }
 
-    // summary text
-    const summary = document.getElementById('summary');
-    let sumTxt = '';
-    if(ex.contact && ex.contact.name) sumTxt += ex.contact.name + (ex.contact.title ? ' — ' + ex.contact.title : '');
-    if(ex.company && ex.company.name) sumTxt += (sumTxt? ' | ':'') + ex.company.name;
-    summary.textContent = sumTxt;
+    // summary
+    const s=[];
+    if(ex.contact?.name) s.push(ex.contact.name);
+    if(ex.contact?.title) s.push(ex.contact.title);
+    if(ex.company?.name) s.push(ex.company.name);
+    document.getElementById('summary').textContent=s.join(" — ");
 
-    // build table view (field/value)
-    const body = document.getElementById('result_body');
-    body.innerHTML = '';
-    const addRow = (k,v) => {
-      const tr = document.createElement('tr');
-      const th = document.createElement('th'); th.textContent = k;
-      const td = document.createElement('td'); td.textContent = v == null ? '' : v;
-      tr.appendChild(th); tr.appendChild(td); body.appendChild(tr);
+    // Raw JSON
+    document.getElementById('output_raw').style.display="block";
+    document.getElementById('out').textContent=JSON.stringify(data,null,2);
+
+    // Table
+    const body=document.getElementById('result_body');
+    body.innerHTML="";
+    const addRow=(k,v)=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<th>${k}</th><td>${v||''}</td>`;
+      body.appendChild(tr);
     };
-    addRow('Contact Name', ex.contact?.name || '');
-    addRow('Title', ex.contact?.title || '');
-    addRow('Email', ex.contact?.email || '');
-    addRow('Phone', ex.contact?.phone || '');
-    addRow('Company', ex.company?.name || '');
-    addRow('Deal Name', ex.deal?.name || '');
-    addRow('Deal Value', ex.deal?.value_usd ? (ex.deal.currency || '') + ' ' + fmtNumber(ex.deal.value_usd) : '');
-    addRow('Deal Stage', ex.deal?.stage || '');
-    addRow('Close Date', ex.deal?.close_date || '');
-    addRow('Pain points', ex.pain_points ? ex.pain_points.join(' | ') : '');
-    addRow('Competitors', ex.competitors ? ex.competitors.join(', ') : '');
-    addRow('Next actions', ex.next_actions ? ex.next_actions.map(a=>a.action + (a.due_date ? ' ('+a.due_date+')':'')).join(' || ') : '');
-    addRow('Notes (snippet)', (ex.notes||'').slice(0,220) + (ex.notes && ex.notes.length>220 ? '...' : ''));
+    addRow("Contact Name",ex.contact?.name);
+    addRow("Title",ex.contact?.title);
+    addRow("Email",ex.contact?.email);
+    addRow("Phone",ex.contact?.phone);
+    addRow("Company",ex.company?.name);
+    addRow("Deal Name",ex.deal?.name);
+    addRow("Deal Value",ex.deal?.currency+" "+ex.deal?.value_usd);
+    addRow("Close Date",ex.deal?.close_date);
 
-    // quick fields cards
-    const q = document.getElementById('quick_fields'); q.innerHTML='';
-    const fieldCard = (label, value) => {
-      const el = document.createElement('div');
-      el.style.background='rgba(255,255,255,0.02)'; el.style.padding='10px'; el.style.borderRadius='8px';
-      el.innerHTML = '<div style="font-size:12px;color:var(--muted)">'+label+'</div><div style="font-weight:600;margin-top:6px">'+(value||'—')+'</div>';
-      return el;
-    };
-    q.appendChild(fieldCard('Contact', ex.contact?.name || '—'));
-    q.appendChild(fieldCard('Email', ex.contact?.email || '—'));
-    q.appendChild(fieldCard('Company', ex.company?.name || '—'));
-    q.appendChild(fieldCard('Deal', ex.deal?.name || '—'));
-    q.appendChild(fieldCard('Value', ex.deal?.value_usd ? (ex.deal.currency||'') + ' ' + fmtNumber(ex.deal.value_usd) : '—'));
-    q.appendChild(fieldCard('Close date', ex.deal?.close_date || '—'));
+    document.getElementById("table_view").style.display="block";
 
-    // payload preview (HubSpot style)
-    const payload = {
-      properties: {
-        firstname: (ex.contact?.name || '').split(' ')[0] || '',
-        lastname: (ex.contact?.name || '').split(' ').slice(1).join(' ') || '',
-        email: ex.contact?.email || '',
-        phone: ex.contact?.phone || '',
-        company: ex.company?.name || '',
-        dealname: ex.deal?.name || '',
-        amount: ex.deal?.value_usd || '',
-        closedate: ex.deal?.close_date || ''
+    // Quick fields
+    const q=document.getElementById('quick_fields');
+    q.innerHTML="";
+    const card=(lbl,val)=>`<div style="background:rgba(255,255,255,0.02);padding:10px;border-radius:8px">
+      <div class="small">${lbl}</div><div style="font-weight:600;margin-top:6px">${val||'—'}</div></div>`;
+    q.innerHTML+=card("Contact",ex.contact?.name);
+    q.innerHTML+=card("Email",ex.contact?.email);
+    q.innerHTML+=card("Company",ex.company?.name);
+    q.innerHTML+=card("Deal",ex.deal?.name);
+
+    // Payload preview
+    const payload={
+      properties:{
+        firstname:(ex.contact?.name||'').split(" ")[0]||'',
+        lastname:(ex.contact?.name||'').split(" ").slice(1).join(" "),
+        email:ex.contact?.email||'',
+        phone:ex.contact?.phone||'',
+        company:ex.company?.name||'',
+        dealname:ex.deal?.name||'',
+        amount:ex.deal?.value_usd||'',
+        closedate:ex.deal?.close_date||''
       }
     };
-    document.getElementById('payload_pre').textContent = JSON.stringify(payload, null, 2);
-
-    // show both table and raw JSON toggle
-    document.getElementById('output_raw').style.display = 'block';
-    document.getElementById('out').textContent = JSON.stringify(data, null, 2);
-    document.getElementById('table_view').style.display = 'block';
-
-    // scroll to output
-    document.getElementById('table_view').scrollIntoView({behavior:'smooth',block:'center'});
-    // save last result in window for export actions
-    window.__LAST_EXTRACT = data;
+    document.getElementById('payload_pre').textContent=JSON.stringify(payload,null,2);
   }
 
   function copyJSON(){
-    const content = document.getElementById('out').textContent;
-    if(!content || content.includes('No result yet')){ alert('No result to copy'); return; }
-    navigator.clipboard.writeText(content).then(()=> alert('JSON copied to clipboard'));
+    const txt=document.getElementById('out').textContent;
+    navigator.clipboard.writeText(txt);
+    alert("JSON copied!");
   }
 
   function downloadJSON(){
-    const content = document.getElementById('out').textContent;
-    if(!content || content.includes('No result yet')){ alert('No JSON to download'); return; }
-    const blob = new Blob([content], {type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'crm_extracted.json'; a.click();
+    const txt=document.getElementById('out').textContent;
+    const blob=new Blob([txt],{type:"application/json"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download="crm_extracted.json"; a.click();
     URL.revokeObjectURL(url);
   }
-
-  function downloadExcel(){
-    const data = window.__LAST_EXTRACT;
-    if(!data){ alert('Run extract first'); return; }
-    const ex = data.extracted || data;
-    // Build a flat row for Excel
-    const row = {
-      contact_name: ex.contact?.name || '',
-      contact_title: ex.contact?.title || '',
-      contact_email: ex.contact?.email || '',
-      contact_phone: ex.contact?.phone || '',
-      company_name: ex.company?.name || '',
-      deal_name: ex.deal?.name || '',
-      deal_value: ex.deal?.value_usd || '',
-      deal_currency: ex.deal?.currency || '',
-      deal_stage: ex.deal?.stage || '',
-      close_date: ex.deal?.close_date || '',
-      pain_points: ex.pain_points ? ex.pain_points.join(' || ') : '',
-      competitors: ex.competitors ? ex.competitors.join(', ') : '',
-      next_actions: ex.next_actions ? ex.next_actions.map(a=> (a.action || '') + (a.due_date ? ' ('+a.due_date+')' : '') ).join(' || ') : '',
-      notes: ex.notes || '',
-      confidence: ex.confidence || ''
-    };
-
-    // Create workbook
-    const ws = XLSX.utils.json_to_sheet([row]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'extracted');
-    XLSX.writeFile(wb, 'crm_extracted.xlsx');
-  }
 </script>
+
 </body>
 </html>

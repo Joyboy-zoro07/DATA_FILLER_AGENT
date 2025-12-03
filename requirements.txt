@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+spacy
+dateparser
+python-dotenv
+pydantic
+requests
